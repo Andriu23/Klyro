@@ -1,0 +1,142 @@
+
+/* Paleta de colores */
+:root {
+    --azul: #183153;
+    --azul-hover: #315A91;
+    --verde: #397C78;
+    --fondo: #F3F5F8;
+    --blanco: #FFFFFF;
+    --texto: #263449;
+    --gris: #657187;
+    --borde: #D8DFE9;
+}
+
+/* General */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--fondo);
+    color: var(--texto);
+    font: 14px "Inter", sans-serif;
+}
+
+/* Encabezado */
+.header {
+    border-bottom: 3px solid var(--verde);
+}
+
+.header-img {
+    width: 38px;
+    height: 38px;
+}
+
+.header-pricipal-titulo {
+    margin: 0;
+    color: var(--azul);
+    font: 700 1.5rem "Poppins", sans-serif;
+}
+
+.header-pricipal-texto {
+    color: var(--gris);
+    font-size: 0.8rem;
+}
+
+/* Formulario y secciones */
+#formTarea {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    width: 80%;
+    margin: 0 auto;
+    background: var(--blanco);
+    text-align: right;
+}
+
+#formTarea fieldset {
+    display: flex;
+    flex: 0 0 calc((100% - 28px) / 3);
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    margin-bottom: 0 !important;
+    border-color: var(--borde) !important;
+    text-align: left;
+}
+
+#formTarea legend {
+    float: none;
+    width: auto;
+    color: var(--azul);
+    font: 600 0.9rem "Poppins", sans-serif;
+}
+
+#formTarea label {
+    margin: 0;
+    color: var(--texto);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+/* Campos */
+#formTarea input,
+#formTarea select,
+#formTarea textarea {
+    width: 88%;
+    align-self: flex-end;
+    padding: 8px;
+    border: 1px solid var(--borde);
+    border-radius: 5px;
+    background: #FAFBFD;
+    color: var(--texto);
+    font: 0.82rem "Inter", sans-serif;
+}
+
+#formTarea input,
+#formTarea select {
+    height: 35px;
+}
+
+#formTarea textarea {
+    height: 55px;
+    resize: vertical;
+}
+
+#formTarea input[readonly] {
+    background: #EBEFF4;
+    color: var(--gris);
+}
+
+#formTarea input:focus,
+#formTarea select:focus,
+#formTarea textarea:focus {
+    border-color: var(--verde);
+    outline: 1px solid var(--verde);
+    background: var(--blanco);
+}
+
+/* Botones */
+#formTarea button[type="reset"] {
+    margin-left: auto;
+    border-color: var(--borde);
+    background: var(--blanco);
+    color: var(--azul);
+}
+
+#formTarea button[type="reset"]:hover {
+    background: var(--fondo);
+}
+
+#formTarea button[type="submit"] {
+    border-color: var(--azul);
+    background: var(--azul);
+    color: var(--blanco);
+    font-weight: 600;
+}
+
+#formTarea button[type="submit"]:hover {
+    border-color: var(--azul-hover);
+    background: var(--azul-hover);
+}
