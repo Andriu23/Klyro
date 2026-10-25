@@ -4,105 +4,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Klyro</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com"> <!-- Preparar conexión con Google Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Preparar conexión con el servidor de las fuentes -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="/style.css/style.css">
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Montserrat:wght@500;600;700&display=swap"
+        rel="stylesheet"> <!-- Cargar las tres tipografías -->
+    <title>Klyro | >Klyro | Planificador de tareas</title>
+    <link rel="stylesheet" href="./style/style.css">
 </head>
 
 <body>
-
-    <header class="header d-flex align-items-center gap-3 px-3 px-md-4 py-3 bg-white border-bottom">
-        <img class="header-img" src="" alt="">
-        <div class="header-pricipal">
-            <h1 class="header-pricipal-titulo">Klyro</h1>
-            <span class="header-pricipal-texto">Organiza tu mundo. Avanza a tu ritmo.</span>
+    <header class="header">
+        <img class="header-img" src="" alt="Logo Klyro">
+        <div class="header-texto">
+            <h1 class="header-texto-titulo">Klyro</h1>
+            <p class="header-texto-parrafo">Organiza tu mundo. Avanza a tu ritmo.</p>
         </div>
     </header>
+    <main class="contenido">
+        <div class="contenido-tarjetas">
+            <div class="contenedor-tareas">
+                <h2 class="titulo-principal">Planificador de Tareas</h2>
+                <form action="" id="formTarea" class="formulario-tareas">
+                    <h3 class="formulario-titulo">Registrar Tarea</h3>
 
-    <main class="container-fluid py-4">
+                    <fieldset class="fieldset">
 
-        <form id="formTarea" class="p-3 p-md-4 mx-auto bg-white border rounded-4 shadow-sm">
+                        <legend class="fieldset-titulo">Información de la tarea</legend>
+                        <div class="campo">
+                            <label for="nombre-tarea">Nombre:</label>
+                            <input type="text" id="nombre-tarea" name="nombre-tarea" placeholder="Ej. Diseñar el formulario">
+                        </div>
+                        <div class="campo">
+                            <label for="descripcion-tarea">Descripción:</label>
+                            <textarea name="descripcion-tarea" id="descripcion-tarea" placeholder="Describe la tarea..."></textarea>
+                        </div>
+                        <div class="campo">
+                            <label for="tipo">Tipo de tarea:</label>
+                            <select name="tipo" id="tipo">
+                                <option value="">Seleccionar Tipo de tarea</option>
+                                <option value="Desarrollo">Desarrollo</option>
+                                <option value="Diseño">Diseño</option>
+                                <option value="Documentación">Documentación</option>
+                                <option value="Pruebas">Pruebas</option>
+                            </select>
+                        </div>
 
-            <fieldset class="fieldset border rounded-3 p-3 mb-3">
-                <legend class="float-none w-auto px-2 small fw-semibold">Información de la tarea</legend>
+                    </fieldset>
 
-                <label class="form-label mb-0 small fw-semibold" for="tarea">Nombre:</label>
-                <input class="form-control form-control-sm" type="text" id="tarea" name="nombre"
-                    placeholder="Ej. Diseñar el formulario" required>
+                    <div class="division-formulario">
+                        <fieldset class="fieldset">
 
-                <label class="form-label mb-0 small fw-semibold" for="descripcion">Descripción:</label>
-                <textarea class="form-control form-control-sm" name="descripcion" id="descripcion"
-                    placeholder="Describe la tarea..." rows="3" required></textarea>
+                            <legend class="fieldset-titulo">Asignación y seguimiento</legend>
+                            <div class="campo">
+                                <label for="responsable">Asignado a:</label>
+                                <input type="text" id="responsable" name="responsable">
+                            </div>
+                            <div class="campo">
+                                <label for="prioridad">Prioridad:</label>
+                                <select name="prioridad" id="prioridad">
+                                    <option value="">Seleccionar prioridad</option>
+                                    <option value="Baja">Baja</option>
+                                    <option value="Media">Media</option>
+                                    <option value="Alta">Alta</option>
+                                </select>
+                            </div>
+                            <div class="campo">
+                                <label for="estado">Estado:</label>
+                                <select name="estado" id="estado">
+                                    <option value="">Seleccionar estado</option>
+                                    <option value="POR HACER">Por hacer</option>
+                                    <option value="EN PROCESO">En proceso</option>
+                                    <option value="REVISION">Revisión</option>
+                                    <option value="HECHO">Hecho</option>
+                                </select>
+                            </div>
 
-                <label class="form-label mb-0 small fw-semibold" for="categoria">Categoría:</label>
-                <select class="form-select form-select-sm" id="categoria" name="categoria" required>
-                    <option value="">Seleccionar categoría</option>
-                    <option value="Planificación">Planificación</option>
-                    <option value="Diseño">Diseño</option>
-                    <option value="Desarrollo">Desarrollo</option>
-                    <option value="Pruebas">Pruebas</option>
-                    <option value="Documentación">Documentación</option>
-                    <option value="Mantenimiento">Mantenimiento</option>
-                </select>
+                        </fieldset>
 
-            </fieldset>
+                        <fieldset class="fieldset">
 
-            <fieldset class="fieldset border rounded-3 p-3 mb-3">
-                <legend class="float-none w-auto px-2 small fw-semibold">Asignación y seguimiento</legend>
+                            <legend class="fieldset-titulo">Fechas</legend>
+                            <div class="campo">
+                                <label for="fechaDeCreacion">Fecha de creación:</label>
+                                <input type="datetime-local" id="fechaDeCreacion" name="fechaDeCreacion" readonly>
+                            </div>
+                            <div class="campo">
+                                <label for="fechaDeInicio">Fecha de inicio:</label>
+                                <input type="date" id="fechaDeInicio" name="fechaDeInicio">
+                            </div>
+                            <div class="campo">
+                                <label for="fechaDeEntrega">Fecha de entrega:</label>
+                                <input type="date" id="fechaDeEntrega" name="fechaDeEntrega">
+                            </div>
 
-                <label class="form-label mb-0 small fw-semibold" for="asignadoA">Asignado a:</label>
-                <select class="form-select form-select-sm" id="asignadoA" name="asignadoA" required>
-                    <option value="">Seleccionar usuario</option>
-                    <option value="Usuario 1">Usuario 1</option>
-                    <option value="Usuario 2">Usuario 2</option>
-                    <option value="Usuario 3">Usuario 3</option>
-                </select>
+                        </fieldset>
+                    </div>
+                    <div class="campo">
+                        <button type="reset">Limpiar</button>
+                        <button type="submit">Crear tarea</button>
+                    </div>
+                </form>
+            </div>
 
-                <label class="form-label mb-0 small fw-semibold" for="prioridad">Prioridad:</label>
-                <select class="form-select form-select-sm" id="prioridad" name="prioridad" required>
-                    <option value="">Seleccionar prioridad</option>
-                    <option value="Alta">Alta</option>
-                    <option value="Media">Media</option>
-                    <option value="Baja">Baja</option>
-                </select>
+            <div class="blacklog">
+                <form action="" class="filtro" id="formFiltro">
+                    <h2>Tareas</h2>
+                    <fieldset class="fieldset-filtro">
+                        <label for="filtro">Buscar por estado:</label>
+                        <select name="filtro" id="filtro">
+                            <option value="">Todos los estados</option>
+                             <option value="POR HACER">Por hacer</option>
+                            <option value="EN PROCESO">En proceso</option>
+                            <option value="REVISION">Revisión</option>
+                            <option value="HECHO">Hecho</option>
+                        </select>
+                    </fieldset>
+                    <button type="button" id="btnEliminarSeleccionadas">Eliminar tareas seleccionadas</button>
+                </form>
 
-                <label class="form-label mb-0 small fw-semibold" for="estado">Estado:</label>
-                <select class="form-select form-select-sm" id="estado" name="estado" required>
-                    <option value="">Seleccionar estado</option>
-                    <option value="Por hacer">Por hacer</option>
-                    <option value="En progreso">En progreso</option>
-                    <option value="En revisión">En revisión</option>
-                    <option value="Terminado">Terminado</option>
-                </select>
-
-            </fieldset>
-
-            <fieldset class="fieldset border rounded-3 p-3 mb-3">
-
-                <legend class="float-none w-auto px-2 small fw-semibold">Fechas</legend>
-
-                <label class="form-label mb-0 small fw-semibold" for="fechaCreacion">Fecha de creación:</label>
-                <input class="form-control form-control-sm" type="datetime-local" id="fechaCreacion" name="fechaCreacion" readonly required>
-
-                <label class="form-label mb-0 small fw-semibold" for="fechaInicio">Fecha de inicio:</label>
-                <input class="form-control form-control-sm" type="date" id="fechaInicio" name="fechaInicio" required>
-
-                <label class="form-label mb-0 small fw-semibold" for="fechaEntrega">Fecha de entrega:</label>
-                <input class="form-control form-control-sm" type="date" id="fechaEntrega" name="fechaEntrega" required>
-
-            </fieldset>
-            <button class="btn btn-outline-secondary btn-sm" type="reset">Limpiar</button>
-            <button class="btn btn-primary btn-sm" type="submit">Crear tarea</button>
-
-        </form>
-
+                <div id="listaTareas"></div>
+            </div>
+        </div>
     </main>
 
+    <footer class="footer">
+        <p>© 2026 Mi Proyecto. Todos los derechos reservados.</p>
+    </footer>
+
+    <script type="module" src="./src/app.js"></script>
 </body>
 
 </html>
