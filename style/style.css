@@ -1,0 +1,570 @@
+:root {
+    --fuente-titulos: 'Montserrat', sans-serif;
+    --fuente-subtitulos: 'DM Sans', sans-serif;
+    --fuente-interfaz: 'Manrope', sans-serif;
+
+    --azul: #183153;
+    --azul-hover: #315A91;
+    --verde: #397C78;
+    --fondo: #F3F5F8;
+    --blanco: #FFFFFF;
+    --texto: #263449;
+    --gris: #657187;
+    --borde: #D8DFE9;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--fondo);
+}
+
+.header {
+    width: 100%;
+    min-height: 10vh;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    flex-wrap: wrap;
+    background-color: var(--azul);
+}
+
+.header-img {
+    flex-grow: 1;
+    color: var(--blanco);
+    text-align: center;
+}
+
+.header-texto {
+    display: flex;
+    flex: 4;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+    color: var(--blanco);
+}
+
+.header-texto-titulo {
+    padding: 0 5px;
+    font-family: var(--fuente-titulos);
+}
+
+.header-texto-parrafo {
+    margin-left: 25px;
+    font-family: var(--fuente-subtitulos);
+    font-size: small;
+    letter-spacing: 1.5px;
+}
+
+.contenido {
+    min-height: 100vh;
+    display: flex;
+}
+
+.contenido-tarjetas {
+    width: 90%;
+    min-height: 100vh;
+    margin: 20px auto;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: self-start;
+    gap: 20px;
+    background-color: var(--fondo);
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+}
+
+.contenedor-tareas,
+.blacklog {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(24, 49, 83, 0.08);
+}
+
+.contenedor-tareas {
+    width: 45%;
+    padding: 25px;
+    gap: 15px;
+    background-color: var(--blanco);
+}
+
+.titulo-principal,
+.formulario-titulo,
+.filtro h2 {
+    color: var(--azul);
+}
+
+.titulo-principal {
+    font-family: var(--fuente-titulos);
+}
+
+.formulario-tareas {
+    width: 100%;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: var(--blanco);
+    border-radius: 8px;
+}
+
+.formulario-titulo {
+    font-family: var(--fuente-subtitulos);
+    letter-spacing: 0.5px;
+}
+
+.fieldset,
+.fieldset-filtro {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--borde);
+    border-radius: 5px;
+}
+
+.fieldset {
+    width: 100%;
+    padding: 5px 10px;
+    gap: 2px;
+}
+
+.fieldset-titulo {
+    padding: 0 8px;
+    font-size: small;
+    font-family: var(--fuente-subtitulos);
+}
+
+.division-formulario {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.campo label,
+.fieldset label,
+.fieldset-filtro label {
+    color: var(--texto);
+    font-family: var(--fuente-subtitulos);
+}
+
+.campo input,
+.campo select,
+.campo textarea,
+.fieldset-filtro select {
+    width: 95%;
+    margin: auto;
+    padding: 5px 10px;
+    color: var(--texto);
+    background-color: var(--blanco);
+    border: 1px solid var(--borde);
+    border-left: 2px solid var(--azul);
+    border-radius: 5px;
+    font-family: var(--fuente-interfaz);
+}
+
+.campo input::placeholder,
+.campo textarea::placeholder {
+    color: var(--gris);
+    opacity: 0.55;
+}
+
+.formulario-tareas button,
+.filtro button {
+    padding: 10px 14px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-family: var(--fuente-interfaz);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.formulario-tareas > .campo:last-child {
+    flex-direction: row;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.formulario-tareas button:last-child,
+.filtro button {
+    color: var(--blanco);
+    background-color: var(--azul);
+}
+
+.formulario-tareas button:last-child:hover,
+.filtro button:hover {
+    background-color: var(--azul-hover);
+}
+
+.formulario-tareas button:first-child {
+    color: var(--gris);
+    background-color: var(--blanco);
+    border-color: var(--borde);
+}
+
+.formulario-tareas button:first-child:hover {
+    color: var(--texto);
+    background-color: var(--fondo);
+}
+
+.blacklog {
+    width: 35%;
+    padding: 25px;
+    gap: 20px;
+}
+
+.filtro {
+    width: 90%;
+    margin: 20px 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-color: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(24, 49, 83, 0.08);
+}
+
+.filtro h2 {
+    padding-bottom: 12px;
+    font-family: var(--fuente-titulos);
+    border-bottom: 2px solid var(--borde);
+}
+
+.fieldset-filtro {
+    padding: 12px;
+    gap: 10px;
+    border-radius: 8px;
+}
+
+.footer {
+    min-height: 5vh;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--azul);
+}
+
+.footer p {
+    color: var(--blanco);
+    font-size: small;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+/* Portátiles */
+@media (max-width: 1100px) {
+    .contenido-tarjetas {
+        width: 95%;
+        max-height: none;
+    }
+
+    .contenedor-tareas,
+    .blacklog {
+        padding: 20px;
+    }
+
+    .contenedor-tareas {
+        width: 60%;
+    }
+
+    .blacklog {
+        width: 40%;
+    }
+
+    .division-formulario {
+        gap: 12px;
+    }
+}
+
+/* Tablets */
+@media (max-width: 800px) {
+    .contenido {
+        min-height: auto;
+    }
+
+    .contenido-tarjetas {
+        width: 94%;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .contenedor-tareas,
+    .blacklog {
+        width: auto;
+        margin: 15px;
+    }
+
+    .blacklog {
+        margin-top: 0;
+    }
+
+    .division-formulario {
+        gap: 15px;
+    }
+}
+
+/* Celulares */
+@media (max-width: 600px) {
+    .header {
+        gap: 12px;
+        padding: 12px;
+    }
+
+    .header-img {
+        flex: 0 1 45px;
+    }
+
+    .header-texto {
+        flex: 1;
+    }
+
+    .header-texto-parrafo {
+        margin-left: 5px;
+        letter-spacing: 0.5px;
+        overflow-wrap: anywhere;
+    }
+
+    .contenido-tarjetas {
+        width: 96%;
+        margin: 10px auto;
+    }
+
+    .contenedor-tareas,
+    .blacklog {
+        margin: 10px;
+        padding: 12px;
+    }
+
+    .division-formulario,
+    .formulario-tareas > .campo:last-child {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .campo input,
+    .campo select,
+    .campo textarea,
+    .fieldset-filtro select {
+        width: 100%;
+    }
+
+    .formulario-tareas > .campo:last-child button,
+    .filtro button {
+        width: 100%;
+    }
+
+    .filtro {
+        width: 100%;
+        margin: 10px 0;
+        padding: 12px;
+    }
+}
+
+/* Celulares pequeños */
+@media (max-width: 360px) {
+    .header {
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .header-img {
+        flex-basis: 35px;
+    }
+
+    .header-texto {
+        gap: 5px;
+    }
+
+    .contenedor-tareas,
+    .blacklog {
+        margin: 8px;
+        padding: 8px;
+    }
+
+    .fieldset {
+        padding: 8px;
+    }
+}
+
+.tarjeta-tarea {
+    width: 100%;
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(24, 49, 83, 0.06);
+}
+
+.tarea-card {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding: 10px;
+    color: var(--texto);
+    font-family: var(--fuente-interfaz);
+    font-size: 12px;
+}
+
+.tarea-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--borde);
+}
+
+.tarea-id {
+    color: var(--gris);
+    font-size: 12px;
+}
+
+.tarea-header strong {
+    padding: 3px 7px;
+    color: var(--blanco);
+    background: var(--verde);
+    border-radius: 4px;
+    font-size: 10px;
+}
+
+.tarea-titulo {
+    color: var(--azul);
+    font-family: var(--fuente-titulos);
+    font-size: 15px;
+}
+
+.tarea-descripcion {
+    color: var(--gris);
+    font-family: var(--fuente-subtitulos);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.tarea-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.tarea-meta p {
+    color: var(--gris);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.tarea-meta p strong {
+    color: var(--texto);
+}
+
+.tarea-fechas {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 7px 0;
+    border-top: 1px solid var(--borde);
+    border-bottom: 1px solid var(--borde);
+    color: var(--gris);
+    font-size: 12px;
+}
+
+.tarea-fechas strong {
+    color: var(--texto);
+}
+
+.tarea-edicion {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.campo-grupo {
+    width: 45%;
+}
+
+.campo-grupo label {
+    color: var(--texto);
+    font-size: 10px;
+}
+
+.campo-grupo input,
+.campo-grupo select {
+    width: 100%;
+    padding: 4px 6px;
+    color: var(--texto);
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: 4px;
+    font-family: var(--fuente-interfaz);
+    font-size: 10px;
+}
+
+.tarea-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+    padding-top: 4px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+}
+
+.tarea-botones {
+    display: flex;
+    gap: 10px;
+}
+
+.tarea-botones button {
+    padding: 5px 8px;
+    border: 1px solid var(--borde);
+    border-radius: 4px;
+    font-family: var(--fuente-interfaz);
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.btn-eliminar {
+    color: var(--texto);
+    background-color: var(--blanco);
+}
+
+.btn-confirmar-cambios {
+    color: var(--blanco);
+    background-color: var(--azul);
+}
+
+.btn-confirmar-cambios:hover {
+    background-color: var(--azul-hover)
+}
+
+@media (max-width: 600px) {
+    .tarea-edicion {
+        grid-template-columns: 1fr;
+    }
+
+    .tarea-footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
