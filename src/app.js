@@ -15,7 +15,7 @@ const fechaDeEntrega = document.getElementById("fechaDeEntrega");
 // Colocar la fecha de creación y restringir las fechas.
 function actualizarFechas() {
     const fecha = new Date(); // Se obtiene la fecha actual
-    fecha.setMinutes(fecha.getMinutes() - fecha.getTimezoneOffset());
+    fecha.setMinutes(fecha.getMinutes() - fecha.getTimezoneOffset()); // Se ajusta la fecha según la zona horaria local
 
     fechaDeCreacion.value = fecha.toISOString().slice(0, 16); // Convierte la fecha a formato  (YYYY-MM-DDTHH:mm)
     fechaDeInicio.min = fechaDeCreacion.value.slice(0, 10); // La fecha de inicio toma como minimo la fecha de creación (YYYY-MM-DD)

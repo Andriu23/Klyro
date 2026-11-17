@@ -4,7 +4,7 @@ export class TaskManager {
         this.contadorId = 1;
     }
 
-    getAllTasks() {
+    getAllTasks() { // Este método permite obtener todas las tareas almacenadas en el arreglo.
         return this.tareas;
     }
 
