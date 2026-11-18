@@ -4,7 +4,7 @@ export class TaskManager {
         this.contadorId = 1;
     }
 
-    getAllTasks() {
+    getAllTasks() { // Este método permite obtener todas las tareas almacenadas en el arreglo.
         return this.tareas;
     }
 
@@ -51,5 +51,17 @@ export class TaskManager {
             return true;
         }
         return false;
+    }
+
+    buscarTareaPorId(id) {
+        let tareaEncontrada;
+
+        for (let tarea of this.tareas) {
+            if (tarea.id === id) {
+                tareaEncontrada = tarea;
+                break;
+            }
+        }
+        return tareaEncontrada;
     }
 }

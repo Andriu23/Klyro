@@ -558,6 +558,16 @@ body {
     background-color: var(--azul-hover)
 }
 
+.btn-completar {
+    color: var(--blanco);
+    background-color: var(--verde);
+    border-color: var(--verde) !important;
+}
+
+.btn-completar:hover {
+    background-color: #285E5A;
+}
+
 @media (max-width: 600px) {
     .tarea-edicion {
         grid-template-columns: 1fr;

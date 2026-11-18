@@ -15,7 +15,7 @@ const fechaDeEntrega = document.getElementById("fechaDeEntrega");
 // Colocar la fecha de creación y restringir las fechas.
 function actualizarFechas() {
     const fecha = new Date(); // Se obtiene la fecha actual
-    fecha.setMinutes(fecha.getMinutes() - fecha.getTimezoneOffset());
+    fecha.setMinutes(fecha.getMinutes() - fecha.getTimezoneOffset()); // Se ajusta la fecha según la zona horaria local
 
     fechaDeCreacion.value = fecha.toISOString().slice(0, 16); // Convierte la fecha a formato  (YYYY-MM-DDTHH:mm)
     fechaDeInicio.min = fechaDeCreacion.value.slice(0, 10); // La fecha de inicio toma como minimo la fecha de creación (YYYY-MM-DD)
@@ -37,6 +37,17 @@ fechaDeInicio.addEventListener("change", () => {
 function crearTarjeta(tarea) {
     const tarjeta = document.createElement("article");
     tarjeta.classList.add("tarjeta-tarea");
+    tarjeta.dataset.id = tarea.id;
+
+    let clasePrioridad = "";
+
+    if (tarea.prioridad === "Alta") {
+        clasePrioridad = "prioridad-alta";
+    } else if (tarea.prioridad === "Media") {
+        clasePrioridad = "prioridad-media";
+    } else {
+        clasePrioridad = "prioridad-baja";
+    }
 
     tarjeta.innerHTML = `
     <div class="tarea-card" data-id="${tarea.id}">
@@ -90,7 +101,7 @@ function crearTarjeta(tarea) {
             <div class="campo-grupo">
                 <label>Tipo de tarea</label>
                 <select class="campo-tipo">
-                    <<option value="Desarrollo" ${tarea.tipo === "Desarrollo" ? "selected" : ""}>Desarrollo</option>
+                    <option value="Desarrollo" ${tarea.tipo === "Desarrollo" ? "selected" : ""}>Desarrollo</option>
                     <option value="Diseño" ${tarea.tipo === "Diseño" ? "selected" : ""}>Diseño</option>
                     <option value="Documentación" ${tarea.tipo === "Documentación" ? "selected" : ""}>Documentación</option>
                     <option value="Pruebas" ${tarea.tipo === "Pruebas" ? "selected" : ""}>Pruebas</option>
@@ -104,6 +115,7 @@ function crearTarjeta(tarea) {
                 <input type="checkbox" class="seleccionar-tarea" data-id="${tarea.id}">Seleccionar</label>
             
             <div class="tarea-botones">
+                <button type="button" class="btn-completar">Tarea Completada</button>
                 <button type="button" class="btn-eliminar">Eliminar</button>
                 <button type="button" class="btn-confirmar-cambios">Actualizar</button>
             </div>
@@ -165,6 +177,28 @@ function mostrarTareas() {
         listaTareas.appendChild(crearTarjeta(tarea));
     });
 }
+
+listaTareas.addEventListener("click", (evento) => {
+
+    if (evento.target.classList.contains("btn-completar")) {
+
+        let elementoTarea = evento.target.parentElement;
+
+        while (!elementoTarea.classList.contains("tarea-card")) {
+            elementoTarea = elementoTarea.parentElement;
+        }
+
+        const id = Number(elementoTarea.dataset.id);
+
+        let tarea = administrador.buscarTareaPorId(id);
+
+        if (tarea) {
+            tarea.estado = "HECHO";
+
+            mostrarTareas();
+        }
+    }
+});
 
 // Crear una tarea nueva.
 formulario.addEventListener("submit", (evento) => {
