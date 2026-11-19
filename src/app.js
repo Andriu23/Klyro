@@ -8,9 +8,27 @@ const listaTareas = document.getElementById("listaTareas");
 const filtro = document.getElementById("filtro");
 const btnEliminarSeleccionadas = document.getElementById("btnEliminarSeleccionadas");
 
+const panelKanban = document.querySelector(".panel-kanban");
+
 const fechaDeCreacion = document.getElementById("fechaDeCreacion");
 const fechaDeInicio = document.getElementById("fechaDeInicio");
 const fechaDeEntrega = document.getElementById("fechaDeEntrega");
+
+// Referencias a las cuatro columnas del tablero.
+const columnas = {
+    "POR HACER": document.getElementById("columna-por-hacer"),
+    "EN PROCESO": document.getElementById("columna-en-proceso"),
+    "REVISION": document.getElementById("columna-revision"),
+    "HECHO": document.getElementById("columna-hecho")
+};
+
+// Referencias a los contadores.
+const contadores = {
+    "POR HACER": document.getElementById("contador-por-hacer"),
+    "EN PROCESO": document.getElementById("contador-en-proceso"),
+    "REVISION": document.getElementById("contador-revision"),
+    "HECHO": document.getElementById("contador-hecho")
+};
 
 // Colocar la fecha de creación y restringir las fechas.
 function actualizarFechas() {
@@ -33,28 +51,36 @@ fechaDeInicio.addEventListener("change", () => {
     }
 });
 
+// Obtener la clase CSS según la prioridad.
+function obtenerClasePrioridad(prioridad) {
+    if (prioridad === "Alta") return "prioridad-alta";
+    if (prioridad === "Media") return "prioridad-media";
+    return "prioridad-baja";
+}
+
+// Obtener el nombre del estado.
+function obtenerNombreEstado(estado) {
+    const nombres = {
+        "POR HACER": "Por hacer",
+        "EN PROCESO": "En proceso",
+        "REVISION": "En revisión",
+        "HECHO": "Hecho"
+    };
+
+    return nombres[estado] || estado;
+}
+
 // Crear la tarjeta de una tarea.
 function crearTarjeta(tarea) {
     const tarjeta = document.createElement("article");
     tarjeta.classList.add("tarjeta-tarea");
     tarjeta.dataset.id = tarea.id;
 
-    let clasePrioridad = "";
-
-    if (tarea.prioridad === "Alta") {
-        clasePrioridad = "prioridad-alta";
-    } else if (tarea.prioridad === "Media") {
-        clasePrioridad = "prioridad-media";
-    } else {
-        clasePrioridad = "prioridad-baja";
-    }
-
     tarjeta.innerHTML = `
     <div class="tarea-card" data-id="${tarea.id}">
-    
         <div class="tarea-header">
             <span class="tarea-id">#${tarea.id}</span>
-            <strong>${tarea.prioridad}</strong>
+            <strong class="${obtenerClasePrioridad(tarea.prioridad)}">${tarea.prioridad}</strong>
         </div>
         <h3 class="tarea-titulo">${tarea.nombre}</h3>
         <p class="tarea-descripcion"><strong>Descripción:</strong> ${tarea.descripcion}</p>
@@ -62,7 +88,7 @@ function crearTarjeta(tarea) {
         <div class="tarea-meta">
             <p><strong>Tipo:</strong> ${tarea.tipo}</p>
             <p><strong>Responsable:</strong> ${tarea.asignadoA}</p>
-            <p><strong>Estado actual:</strong> <span class="badge-estado">${tarea.estado}</span></p>
+            <p><strong>Estado actual:</strong><span class="badge-estado">${obtenerNombreEstado(tarea.estado)}</span></p>
         </div>
 
         <div class="tarea-fechas">
@@ -80,7 +106,6 @@ function crearTarjeta(tarea) {
                     <option value="POR HACER" ${tarea.estado === "POR HACER" ? "selected" : ""}>Por hacer</option>
                     <option value="EN PROCESO" ${tarea.estado === "EN PROCESO" ? "selected" : ""}>En proceso</option>
                     <option value="REVISION" ${tarea.estado === "REVISION" ? "selected" : ""}>Revisión</option>
-                    <option value="HECHO" ${tarea.estado === "HECHO" ? "selected" : ""}>Hecho</option>
                 </select>
             </div>
 
@@ -110,12 +135,10 @@ function crearTarjeta(tarea) {
         </div>
 
         <div class="tarea-footer">
-            <label class="checkbox-label">
-
-                <input type="checkbox" class="seleccionar-tarea" data-id="${tarea.id}">Seleccionar</label>
+            <label class="checkbox-label"><input type="checkbox" class="seleccionar-tarea" data-id="${tarea.id}">Seleccionar</label>
             
             <div class="tarea-botones">
-                <button type="button" class="btn-completar">Tarea Completada</button>
+                ${tarea.estado !== "HECHO" ? '<button type="button" class="btn-completar">Tarea completada</button>' : ""}
                 <button type="button" class="btn-eliminar">Eliminar</button>
                 <button type="button" class="btn-confirmar-cambios">Actualizar</button>
             </div>
@@ -123,17 +146,24 @@ function crearTarjeta(tarea) {
     </div>
     `;
 
- tarjeta.querySelector(".btn-confirmar-cambios").addEventListener("click", () => {
+    // Actualizar los datos de la tarea.
+    tarjeta.querySelector(".btn-confirmar-cambios").addEventListener("click", () => {
         const nuevoEstado = tarjeta.querySelector(".campo-estado").value;
         const nuevoResponsable = tarjeta.querySelector(".campo-responsable").value.trim();
         const nuevaPrioridad = tarjeta.querySelector(".campo-prioridad").value;
         const nuevoTipo = tarjeta.querySelector(".campo-tipo").value;
 
         // Verificar que el responsable no esté vacío.
-        if (nuevoResponsable === "") {
-            alert("Debes escribir el nombre del responsable.");
+        if (nuevoResponsable === "" || nuevoResponsable.length <= 8) {
+            alert("El nombre del responsable debe tener más de 8 caracteres.");
             return;
         }
+
+        const confirmar = confirm(
+            `¿Estás seguro de actualizar la tarea "${tarea.nombre}"?`
+        );
+
+        if (!confirmar) return;
 
         // Guardar los cambios usando los métodos de TaskManager.
         administrador.updateTask(tarea.id, nuevoEstado);
@@ -141,17 +171,140 @@ function crearTarjeta(tarea) {
         administrador.updateField(tarea.id, "prioridad", nuevaPrioridad);
         administrador.updateField(tarea.id, "tipo", nuevoTipo);
 
+        alert("La tarea se actualizó correctamente.");
+
         // Mostrar nuevamente las tarjetas actualizadas.
         mostrarTareas();
     });
 
     // Eliminar una tarea.
     tarjeta.querySelector(".btn-eliminar").addEventListener("click", () => {
+        const confirmar = confirm(
+            `¿Estás seguro de eliminar la tarea "${tarea.nombre}"?`
+        );
+
+        if (!confirmar) return;
         administrador.deleteTask(tarea.id);
+        alert("La tarea se eliminó correctamente.");
+
         mostrarTareas();
     });
 
     return tarjeta;
+}
+
+// Ajustar la altura de la tarjeta según la cara visible.
+function ajustarAlturaTarjeta(tarjeta, mostrarReverso) {
+    const frente = tarjeta.querySelector(".kanban-frente");
+    const reverso = tarjeta.querySelector(".kanban-reverso");
+    const interior = tarjeta.querySelector(".kanban-tarjeta-interior");
+
+    const caraVisible = mostrarReverso ? reverso : frente;
+
+    interior.style.height = `${caraVisible.scrollHeight}px`;
+}
+
+// Crear la tarjeta del tablero con vista frontal y reverso.
+function crearTarjetaKanban(tarea) {
+    const tarjeta = document.createElement("article");
+    tarjeta.classList.add("kanban-tarjeta");
+
+    tarjeta.innerHTML = `
+        <div class="kanban-tarjeta-interior">
+
+            <div class="kanban-cara kanban-frente">
+                <div class="kanban-tarjeta-cabecera">
+                    <span class="kanban-id">Tarea #${tarea.id}</span>
+                    <span class="etiqueta-prioridad ${obtenerClasePrioridad(tarea.prioridad)}">${tarea.prioridad}</span>
+                </div>
+
+                <h4>${tarea.nombre}</h4>
+                <p><strong>Tipo:</strong> ${tarea.tipo}</p>
+                <p><strong>Asignado a:</strong> ${tarea.asignadoA}</p>
+                <p><strong>Entrega:</strong> ${tarea.fechaDeEntrega}</p>
+
+                <button type="button" class="btn-detalles">Ver detalles</button>
+            </div>
+
+            <div class="kanban-cara kanban-reverso">
+                <div class="kanban-tarjeta-cabecera">
+                    <span class="kanban-id">Detalles #${tarea.id}</span>
+                    <span class="etiqueta-prioridad ${obtenerClasePrioridad(tarea.prioridad)}">${tarea.prioridad}</span>
+                </div>
+
+                <h4>${tarea.nombre}</h4>
+                <p><strong>Descripción:</strong> ${tarea.descripcion}</p>
+                <p><strong>Estado:</strong> ${obtenerNombreEstado(tarea.estado)}</p>
+                <p><strong>Tipo:</strong> ${tarea.tipo}</p>
+                <p><strong>Asignado a:</strong> ${tarea.asignadoA}</p>
+                <p><strong>Creación:</strong> ${tarea.fechaDeCreacion.replace("T", " ")}</p>
+                <p><strong>Inicio:</strong> ${tarea.fechaDeInicio}</p>
+                <p><strong>Entrega:</strong> ${tarea.fechaDeEntrega}</p>
+
+                <button type="button" class="btn-volver">Volver</button>
+            </div>
+
+        </div>
+    `;
+
+    // Calcular la altura inicial del frente.
+    ajustarAlturaTarjeta(tarjeta, false);
+
+    // Mostrar el reverso con los detalles.
+    tarjeta.querySelector(".btn-detalles").addEventListener("click", () => {
+        ajustarAlturaTarjeta(tarjeta, true);
+        tarjeta.classList.add("mostrar-reverso");
+    });
+
+    // Regresar a la vista frontal.
+    tarjeta.querySelector(".btn-volver").addEventListener("click", () => {
+        ajustarAlturaTarjeta(tarjeta, false);
+        tarjeta.classList.remove("mostrar-reverso");
+    });
+
+    return tarjeta;
+}
+
+// Mostrar las tareas en el tablero Kanban.
+function mostrarTablero() {
+    const todasLasTareas = administrador.getAllTasks();
+
+    // Ocultar el tablero si no existen tareas.
+    if (todasLasTareas.length === 0) {
+        panelKanban.style.display = "none";
+        return;
+    }
+
+    panelKanban.style.display = "block";
+
+    // Limpiar las columnas.
+    Object.values(columnas).forEach(columna => {
+        columna.innerHTML = "";
+    });
+
+    // Reiniciar los contadores.
+    Object.values(contadores).forEach(contador => {
+        contador.textContent = "0";
+    });
+
+    // Distribuir las tareas según su estado.
+    todasLasTareas.forEach(tarea => {
+        const columna = columnas[tarea.estado];
+
+        if (columna) {
+            columna.appendChild(crearTarjetaKanban(tarea));
+
+            const cantidad = Number(contadores[tarea.estado].textContent);
+            contadores[tarea.estado].textContent = cantidad + 1;
+        }
+    });
+
+    // Mostrar un mensaje cuando una columna esté vacía.
+    Object.entries(columnas).forEach(([estado, columna]) => {
+        if (columna.children.length === 0) {
+            columna.innerHTML = '<p class="kanban-vacio">No hay tareas</p>';
+        }
+    });
 }
 
 // Mostrar las tareas y aplicar el filtro.
@@ -168,32 +321,34 @@ function mostrarTareas() {
 
     // Mostrar un mensaje si no hay tareas.
     if (tareas.length === 0) {
-        listaTareas.innerHTML = "<p>No hay tareas para mostrar.</p>";
-        return;
+        listaTareas.innerHTML = '<p class="mensaje-vacio">No hay tareas para mostrar.</p>';
+    } else {
+        // Crear y mostrar cada tarjeta.
+        tareas.forEach(tarea => {
+            listaTareas.appendChild(crearTarjeta(tarea));
+        });
     }
 
-    // Crear y mostrar cada tarjeta.
-    tareas.forEach(tarea => {
-        listaTareas.appendChild(crearTarjeta(tarea));
-    });
+    // Actualizar también el tablero Kanban.
+    mostrarTablero();
 }
 
+// Completar tareas desde el Backlog.
 listaTareas.addEventListener("click", (evento) => {
 
     if (evento.target.classList.contains("btn-completar")) {
-
-        let elementoTarea = evento.target.parentElement;
-
-        while (!elementoTarea.classList.contains("tarea-card")) {
-            elementoTarea = elementoTarea.parentElement;
-        }
-
+        const elementoTarea = evento.target.closest(".tarea-card");
         const id = Number(elementoTarea.dataset.id);
-
-        let tarea = administrador.buscarTareaPorId(id);
+        const tarea = administrador.buscarTareaPorId(id);
 
         if (tarea) {
-            tarea.estado = "HECHO";
+            const confirmar = confirm(
+                `¿Estás seguro de marcar como completada la tarea "${tarea.nombre}"?`
+            );
+
+            if (!confirmar) return;
+            administrador.updateTask(id, "HECHO");
+            alert("¡La tarea se marcó como completada!");
 
             mostrarTareas();
         }
@@ -245,6 +400,12 @@ btnEliminarSeleccionadas.addEventListener("click", () => {
         alert("Selecciona al menos una tarea.");
         return;
     }
+
+    const confirmar = confirm(
+        `¿Estás seguro de eliminar ${seleccionadas.length} tarea(s) seleccionada(s)?`
+    );
+
+    if (!confirmar) return;
 
     // Eliminar cada tarea seleccionada.
     seleccionadas.forEach(casilla => {

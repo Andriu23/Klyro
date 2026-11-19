@@ -10,7 +10,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Montserrat:wght@500;600;700&display=swap"
         rel="stylesheet"> <!-- Cargar las tres tipografías -->
-    <title>Klyro | >Klyro | Planificador de tareas</title>
+    <title>Klyro | Planificador de tareas</title>
     <link rel="stylesheet" href="./style/style.css">
 </head>
 
@@ -22,6 +22,7 @@
             <p class="header-texto-parrafo">Organiza tu mundo. Avanza a tu ritmo.</p>
         </div>
     </header>
+
     <main class="contenido">
         <div class="contenido-tarjetas">
             <div class="contenedor-tareas">
@@ -34,11 +35,13 @@
                         <legend class="fieldset-titulo">Información de la tarea</legend>
                         <div class="campo">
                             <label for="nombre-tarea">Nombre:</label>
-                            <input type="text" id="nombre-tarea" name="nombre-tarea" placeholder="Ej. Diseñar el formulario">
+                            <input type="text" id="nombre-tarea" name="nombre-tarea"
+                                placeholder="Ej. Diseñar el formulario">
                         </div>
                         <div class="campo">
                             <label for="descripcion-tarea">Descripción:</label>
-                            <textarea name="descripcion-tarea" id="descripcion-tarea" placeholder="Describe la tarea..."></textarea>
+                            <textarea name="descripcion-tarea" id="descripcion-tarea"
+                                placeholder="Describe la tarea..."></textarea>
                         </div>
                         <div class="campo">
                             <label for="tipo">Tipo de tarea:</label>
@@ -77,7 +80,6 @@
                                     <option value="POR HACER">Por hacer</option>
                                     <option value="EN PROCESO">En proceso</option>
                                     <option value="REVISION">Revisión</option>
-                                    <option value="HECHO">Hecho</option>
                                 </select>
                             </div>
 
@@ -101,7 +103,7 @@
 
                         </fieldset>
                     </div>
-                    <div class="campo">
+                    <div class="campo botones-formulario">
                         <button type="reset">Limpiar</button>
                         <button type="submit">Crear tarea</button>
                     </div>
@@ -115,7 +117,7 @@
                         <label for="filtro">Buscar por estado:</label>
                         <select name="filtro" id="filtro">
                             <option value="">Todos los estados</option>
-                             <option value="POR HACER">Por hacer</option>
+                            <option value="POR HACER">Por hacer</option>
                             <option value="EN PROCESO">En proceso</option>
                             <option value="REVISION">Revisión</option>
                             <option value="HECHO">Hecho</option>
@@ -127,6 +129,37 @@
                 <div id="listaTareas"></div>
             </div>
         </div>
+
+        <section class="panel-kanban">
+            <div class="kanban-titulo">
+                <div>
+                    <h2>Tablero de tareas</h2>
+                    <p>Visualiza el avance de todas tus tareas.</p>
+                </div>
+            </div>
+            <div class="kanban-columnas" id="tableroTareas">
+                <section class="kanban-columna columna-por-hacer">
+                    <h3><span class="punto-estado"></span>Por hacer <span class="contador-columna"
+                            id="contador-por-hacer">0</span></h3>
+                    <div class="kanban-lista" id="columna-por-hacer"></div>
+                </section>
+                <section class="kanban-columna columna-en-proceso">
+                    <h3><span class="punto-estado"></span>En proceso <span class="contador-columna"
+                            id="contador-en-proceso">0</span></h3>
+                    <div class="kanban-lista" id="columna-en-proceso"></div>
+                </section>
+                <section class="kanban-columna columna-revision">
+                    <h3><span class="punto-estado"></span>En revisión <span class="contador-columna"
+                            id="contador-revision">0</span></h3>
+                    <div class="kanban-lista" id="columna-revision"></div>
+                </section>
+                <section class="kanban-columna columna-hecho">
+                    <h3><span class="punto-estado"></span>Hecho <span class="contador-columna"
+                            id="contador-hecho">0</span></h3>
+                    <div class="kanban-lista" id="columna-hecho"></div>
+                </section>
+            </div>
+        </section>
     </main>
 
     <footer class="footer">
