@@ -32,13 +32,38 @@ const contadores = {
 
 // Colocar la fecha de creación y restringir las fechas.
 function actualizarFechas() {
-    const fecha = new Date(); // Se obtiene la fecha actual
-    fecha.setMinutes(fecha.getMinutes() - fecha.getTimezoneOffset()); // Se ajusta la fecha según la zona horaria local
 
-    fechaDeCreacion.value = fecha.toISOString().slice(0, 16); // Convierte la fecha a formato  (YYYY-MM-DDTHH:mm)
-    fechaDeInicio.min = fechaDeCreacion.value.slice(0, 10); // La fecha de inicio toma como minimo la fecha de creación (YYYY-MM-DD)
-    fechaDeEntrega.min = fechaDeInicio.value || fechaDeInicio.min; // La fecha de entrega tomo como referencia la fecha inicio 
+    const fecha = new Date();
+
+    fecha.setMinutes(fecha.getMinutes() - fecha.getTimezoneOffset());
+
+    // Establecer fecha y hora actual.
+    fechaDeCreacion.value = fecha.toISOString().slice(0, 16);
+
+    // La fecha de creación permanece bloqueada para edición manual.
+    fechaDeCreacion.readOnly = true;
+
+    // Establecer la fecha mínima de inicio.
+    const fechaActual = fecha.toISOString().slice(0, 10);
+
+    fechaDeInicio.min = fechaActual;
+
+    // Limpiar las fechas de inicio y entrega.
+    fechaDeInicio.value = "";
+    fechaDeEntrega.value = "";
+
+    // La fecha de entrega depende de la fecha de inicio.
+    fechaDeEntrega.min = fechaActual;
 }
+
+// Actualizar la fecha de creación al limpiar el formulario.
+formulario.addEventListener("reset", () => {
+
+    setTimeout(() => {
+        actualizarFechas();
+    }, 0);
+
+});
 
 actualizarFechas();
 
@@ -96,8 +121,6 @@ function crearTarjeta(tarea) {
             <small>🚀 <strong>Inicio:</strong> ${tarea.fechaDeInicio}</small>
             <small>🏁 <strong>Entrega:</strong> ${tarea.fechaDeEntrega}</small>
         </div>
-
-        <hr class="tarea-divider">
 
         <div class="tarea-edicion">
             <div class="campo-grupo">
@@ -159,19 +182,11 @@ function crearTarjeta(tarea) {
             return;
         }
 
-        const confirmar = confirm(
-            `¿Estás seguro de actualizar la tarea "${tarea.nombre}"?`
-        );
-
-        if (!confirmar) return;
-
         // Guardar los cambios usando los métodos de TaskManager.
         administrador.updateTask(tarea.id, nuevoEstado);
         administrador.assignTask(tarea.id, nuevoResponsable);
         administrador.updateField(tarea.id, "prioridad", nuevaPrioridad);
         administrador.updateField(tarea.id, "tipo", nuevoTipo);
-
-        alert("La tarea se actualizó correctamente.");
 
         // Mostrar nuevamente las tarjetas actualizadas.
         mostrarTareas();
@@ -179,13 +194,7 @@ function crearTarjeta(tarea) {
 
     // Eliminar una tarea.
     tarjeta.querySelector(".btn-eliminar").addEventListener("click", () => {
-        const confirmar = confirm(
-            `¿Estás seguro de eliminar la tarea "${tarea.nombre}"?`
-        );
-
-        if (!confirmar) return;
         administrador.deleteTask(tarea.id);
-        alert("La tarea se eliminó correctamente.");
 
         mostrarTareas();
     });
@@ -193,7 +202,7 @@ function crearTarjeta(tarea) {
     return tarjeta;
 }
 
-// Ajustar la altura de la tarjeta según la cara visible.
+
 function ajustarAlturaTarjeta(tarjeta, mostrarReverso) {
     const frente = tarjeta.querySelector(".kanban-frente");
     const reverso = tarjeta.querySelector(".kanban-reverso");
@@ -201,7 +210,7 @@ function ajustarAlturaTarjeta(tarjeta, mostrarReverso) {
 
     const caraVisible = mostrarReverso ? reverso : frente;
 
-    interior.style.height = `${caraVisible.scrollHeight}px`;
+    interior.style.height = `${caraVisible.offsetHeight}px`;
 }
 
 // Crear la tarjeta del tablero con vista frontal y reverso.
@@ -247,8 +256,10 @@ function crearTarjetaKanban(tarea) {
         </div>
     `;
 
-    // Calcular la altura inicial del frente.
-    ajustarAlturaTarjeta(tarjeta, false);
+    // Establecer la altura inicial del frente después de renderizar.
+    requestAnimationFrame(() => {
+        ajustarAlturaTarjeta(tarjeta, false);
+    });
 
     // Mostrar el reverso con los detalles.
     tarjeta.querySelector(".btn-detalles").addEventListener("click", () => {
@@ -339,19 +350,11 @@ listaTareas.addEventListener("click", (evento) => {
     if (evento.target.classList.contains("btn-completar")) {
         const elementoTarea = evento.target.closest(".tarea-card");
         const id = Number(elementoTarea.dataset.id);
-        const tarea = administrador.buscarTareaPorId(id);
 
-        if (tarea) {
-            const confirmar = confirm(
-                `¿Estás seguro de marcar como completada la tarea "${tarea.nombre}"?`
-            );
+        administrador.updateTask(id, "HECHO");
 
-            if (!confirmar) return;
-            administrador.updateTask(id, "HECHO");
-            alert("¡La tarea se marcó como completada!");
+        mostrarTareas();
 
-            mostrarTareas();
-        }
     }
 });
 
@@ -381,8 +384,7 @@ formulario.addEventListener("submit", (evento) => {
     administrador.addTask(tarea);
     mostrarTareas();
 
-    // Limpiar el formulario y establecer la fecha actual.
-    formulario.reset();
+    // Limpiar el formulario y Actualizar fecha Actual
     actualizarFechas();
 });
 
@@ -400,12 +402,6 @@ btnEliminarSeleccionadas.addEventListener("click", () => {
         alert("Selecciona al menos una tarea.");
         return;
     }
-
-    const confirmar = confirm(
-        `¿Estás seguro de eliminar ${seleccionadas.length} tarea(s) seleccionada(s)?`
-    );
-
-    if (!confirmar) return;
 
     // Eliminar cada tarea seleccionada.
     seleccionadas.forEach(casilla => {
