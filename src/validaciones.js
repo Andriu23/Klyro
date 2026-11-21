@@ -1,4 +1,4 @@
-export function validateTaskForm () {
+export function validateTaskForm() {
     const nombre = document.getElementById('nombre-tarea').value.trim();
     const descripcion = document.getElementById('descripcion-tarea').value.trim();
     const tipo = document.getElementById('tipo').value;
@@ -6,8 +6,8 @@ export function validateTaskForm () {
     const prioridad = document.getElementById('prioridad').value;
     const estado = document.getElementById('estado').value;
 
-    const fechaInicio  = document.getElementById('fechaDeInicio').value;
-    const fechaEntrega  = document.getElementById('fechaDeEntrega').value;
+    const fechaInicio = document.getElementById('fechaDeInicio').value;
+    const fechaEntrega = document.getElementById('fechaDeEntrega').value;
 
     if (nombre === "" || nombre.length <= 8) {
         alert("El nombre no puede estar vacío y debe tener más de 8 caracteres.");
@@ -53,6 +53,7 @@ export function validateTaskForm () {
 
     if (fechaEntrega === "") {
         alert("La Fecha de Entrega no puede estar en blanco.");
+        document.getElementById("fechaDeEntrega").focus();
         return false;
     }
 

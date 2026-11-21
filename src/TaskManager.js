@@ -52,16 +52,4 @@ export class TaskManager {
         }
         return false;
     }
-
-    buscarTareaPorId(id) {
-        let tareaEncontrada;
-
-        for (let tarea of this.tareas) {
-            if (tarea.id === id) {
-                tareaEncontrada = tarea;
-                break;
-            }
-        }
-        return tareaEncontrada;
-    }
 }

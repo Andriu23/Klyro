@@ -541,8 +541,6 @@ body {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 14px;
     align-items: start;
-    overflow: visible;
-    padding-bottom: 0;
 }
 
 .kanban-columna {
@@ -636,6 +634,12 @@ body {
 
 /* Tarjetas Kanban con efecto de giro */
 
+
+/* Tarjetas Kanban con efecto de giro */
+
+
+/* Tarjetas Kanban con efecto de giro */
+
 .kanban-tarjeta {
     width: 100%;
     min-width: 0;
@@ -648,7 +652,7 @@ body {
     min-width: 0;
     height: auto;
     transform-style: preserve-3d;
-    transition: transform .55s ease, height .3s ease;
+    transition: transform .55s ease;
 }
 
 .kanban-tarjeta.mostrar-reverso .kanban-tarjeta-interior {
@@ -756,7 +760,6 @@ body {
     }
 
     .kanban-columnas {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 8px;
     }
 
