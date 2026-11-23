@@ -4,6 +4,26 @@ export class TaskManager {
         this.contadorId = 1;
     }
 
+    // Guardar tareas en LocalStorage.
+
+    guardar() {
+        localStorage.setItem("klyro_tareas", JSON.stringify(this.tareas));
+        localStorage.setItem("klyro_contadorId", String(this.contadorId));
+    }
+
+    cargar() {
+        const tareasGuardadas = localStorage.getItem("klyro_tareas");
+        const contadorGuardado = localStorage.getItem("klyro_contadorId");
+
+        if (tareasGuardadas !== null) {
+            this.tareas = JSON.parse(tareasGuardadas);
+        }
+
+        if (contadorGuardado !== null) {
+            this.contadorId = Number(contadorGuardado);
+        }
+    }
+
     getAllTasks() { // Este método permite obtener todas las tareas almacenadas en el arreglo.
         return this.tareas;
     }

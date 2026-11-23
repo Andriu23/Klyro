@@ -188,6 +188,8 @@ function crearTarjeta(tarea) {
         administrador.updateField(tarea.id, "prioridad", nuevaPrioridad);
         administrador.updateField(tarea.id, "tipo", nuevoTipo);
 
+        administrador.guardar();
+
         // Mostrar nuevamente las tarjetas actualizadas.
         mostrarTareas();
     });
@@ -195,6 +197,8 @@ function crearTarjeta(tarea) {
     // Eliminar una tarea.
     tarjeta.querySelector(".btn-eliminar").addEventListener("click", () => {
         administrador.deleteTask(tarea.id);
+
+        administrador.guardar();
 
         mostrarTareas();
     });
@@ -353,6 +357,8 @@ listaTareas.addEventListener("click", (evento) => {
 
         administrador.updateTask(id, "HECHO");
 
+        administrador.guardar();
+
         mostrarTareas();
 
     }
@@ -382,6 +388,7 @@ formulario.addEventListener("submit", (evento) => {
 
     // Guardar la tarea y actualizar la página.
     administrador.addTask(tarea);
+    administrador.guardar();
     mostrarTareas();
 
     // Limpiar el formulario y Actualizar fecha Actual
@@ -408,8 +415,13 @@ btnEliminarSeleccionadas.addEventListener("click", () => {
         administrador.deleteTask(Number(casilla.dataset.id));
     });
 
+    administrador.guardar();
+
     mostrarTareas();
 });
+
+// Recuperar las tareas guardadas.
+administrador.cargar();
 
 // Mostrar las tareas al abrir la página.
 mostrarTareas();
