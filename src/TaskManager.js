@@ -1,30 +1,18 @@
+import { obtenerTareas,  crearTarea,  actualizarTarea, eliminarTarea } from "./api.js";
+
 export class TaskManager {
     constructor() {
         this.tareas = [];
         this.contadorId = 1;
     }
 
-    // Guardar tareas en LocalStorage.
-
-    guardar() {
-        localStorage.setItem("klyro_tareas", JSON.stringify(this.tareas));
-        localStorage.setItem("klyro_contadorId", String(this.contadorId));
+    // Consultar las tareas del backend.
+    async cargar() {
+        this.tareas = await obtenerTareas();
+        return this.tareas;
     }
 
-    cargar() {
-        const tareasGuardadas = localStorage.getItem("klyro_tareas");
-        const contadorGuardado = localStorage.getItem("klyro_contadorId");
-
-        if (tareasGuardadas !== null) {
-            this.tareas = JSON.parse(tareasGuardadas);
-        }
-
-        if (contadorGuardado !== null) {
-            this.contadorId = Number(contadorGuardado);
-        }
-    }
-
-    getAllTasks() { // Este método permite obtener todas las tareas almacenadas en el arreglo.
+    getAllTasks() {
         return this.tareas;
     }
 
@@ -32,44 +20,55 @@ export class TaskManager {
         return this.tareas.filter(tarea => tarea.estado === estado);
     }
 
-    addTask(tarea) {
-        tarea.id = this.contadorId;
-        this.tareas.push(tarea);
-        this.contadorId++;
-
-        return tarea;
+    async addTask(tarea) {
+        const tareaGuardada = await crearTarea(tarea);
+        this.tareas.push(tareaGuardada);
+        return tareaGuardada;
     }
 
-    deleteTask(id) {
-        const cantidadAnterior = this.tareas.length;
-        this.tareas = this.tareas.filter(tarea => tarea.id !== Number(id));
-        return this.tareas.length < cantidadAnterior;
+    async deleteTask(id) {
+        await eliminarTarea(id);
+        this.tareas = this.tareas.filter(
+            tarea => Number(tarea.id) !== Number(id)
+        );
+        return true;
     }
 
-    updateTask(id, nuevoEstado) {
-        const tarea = this.tareas.find(tarea => tarea.id === Number(id));
-        if (tarea) {
-            tarea.estado = nuevoEstado;
-            return true;
+    async updateTask(id, nuevoEstado) {
+        const tareaExistente = this.tareas.find(
+            tarea => Number(tarea.id) === Number(id)
+        );
+
+        if (!tareaExistente) {
+            throw new Error(
+                "No se encontró la tarea que deseas actualizar."
+            );
         }
-        return false;
-    }
 
-    assignTask(id, nuevoResponsable) {
-        const tarea = this.tareas.find(tarea => tarea.id === Number(id));
-        if (tarea) {
-            tarea.asignadoA = nuevoResponsable;
-            return true;
-        }
-        return false;
-    }
+        const tareaActualizada = {
+            nombre: tareaExistente.nombre,
+            descripcion: tareaExistente.descripcion,
+            tipo: tareaExistente.tipo,
+            asignadoA: tareaExistente.asignadoA,
+            prioridad: tareaExistente.prioridad,
+            estado: tareaExistente.estado,
+            fechaCreacion: tareaExistente.fechaCreacion,
+            fechaInicio: tareaExistente.fechaInicio,
+            fechaEntrega: tareaExistente.fechaEntrega,
+            ...nuevoEstado
+        };
 
-    updateField(id, campo, valor) {
-        const tarea = this.tareas.find(tarea => tarea.id === Number(id));
-        if (tarea) {
-            tarea[campo] = valor;
-            return true;
-        }
-        return false;
+        const respuesta = await actualizarTarea(
+            id,
+            tareaActualizada
+        );
+
+        const indice = this.tareas.findIndex(
+            tarea => Number(tarea.id) === Number(id)
+        );
+
+        this.tareas[indice] = respuesta;
+
+        return respuesta;
     }
 }
