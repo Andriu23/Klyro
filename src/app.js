@@ -1,11 +1,12 @@
-import { TaskManager } from "./TaskManager.js"; // Importarmos la clase y sus funcionalidades
-import { validateTaskForm } from "./validaciones.js"; // Importarmos la clase y sus funcionalidades
+import { TaskManager } from "./TaskManager.js";
+import { validateTaskForm } from "./validaciones.js";
 
-const administrador = new TaskManager(); // Crea un objeto a partir de la clase TaskManager
+const administrador = new TaskManager();
 
 const formulario = document.getElementById("formTarea");
 const listaTareas = document.getElementById("listaTareas");
 const filtro = document.getElementById("filtro");
+
 const btnEliminarSeleccionadas = document.getElementById("btnEliminarSeleccionadas");
 
 const panelKanban = document.querySelector(".panel-kanban");
@@ -29,6 +30,16 @@ const contadores = {
     "REVISION": document.getElementById("contador-revision"),
     "HECHO": document.getElementById("contador-hecho")
 };
+
+// Mostrar errores de comunicación con el backend.
+function mostrarError(error) {
+    console.error("Error:", error);
+
+    alert(
+        error.message ||
+        "Ocurrió un error al comunicarse con el servidor."
+    );
+}
 
 // Colocar la fecha de creación y restringir las fechas.
 function actualizarFechas() {
@@ -95,6 +106,21 @@ function obtenerNombreEstado(estado) {
     return nombres[estado] || estado;
 }
 
+// Formatear las fechas para mostrarlas en las tarjetas.
+function obtenerFecha(fecha) {
+    if (!fecha) {
+        return "No definida";
+    }
+
+    const partes = fecha.split("-");
+
+    if (partes.length !== 3) {
+        return fecha;
+    }
+
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+}
+
 // Crear la tarjeta de una tarea.
 function crearTarjeta(tarea) {
     const tarjeta = document.createElement("article");
@@ -117,9 +143,9 @@ function crearTarjeta(tarea) {
         </div>
 
         <div class="tarea-fechas">
-            <small>📅 <strong>Creación:</strong> ${tarea.fechaDeCreacion.replace("T", " ")}</small>
-            <small>🚀 <strong>Inicio:</strong> ${tarea.fechaDeInicio}</small>
-            <small>🏁 <strong>Entrega:</strong> ${tarea.fechaDeEntrega}</small>
+             <small> 📅 <strong>Creación:</strong>${obtenerFecha(tarea.fechaCreacion)}</small>
+            <small> 🚀 <strong>Inicio:</strong>${obtenerFecha(tarea.fechaInicio)}</small>
+            <small> 🏁 <strong>Entrega:</strong>${obtenerFecha(tarea.fechaEntrega)}</small>
         </div>
 
         <div class="tarea-edicion">
@@ -170,7 +196,7 @@ function crearTarjeta(tarea) {
     `;
 
     // Actualizar los datos de la tarea.
-    tarjeta.querySelector(".btn-confirmar-cambios").addEventListener("click", () => {
+    tarjeta.querySelector(".btn-confirmar-cambios").addEventListener("click", async () => {
         const nuevoEstado = tarjeta.querySelector(".campo-estado").value;
         const nuevoResponsable = tarjeta.querySelector(".campo-responsable").value.trim();
         const nuevaPrioridad = tarjeta.querySelector(".campo-prioridad").value;
@@ -182,25 +208,33 @@ function crearTarjeta(tarea) {
             return;
         }
 
-        // Guardar los cambios usando los métodos de TaskManager.
-        administrador.updateTask(tarea.id, nuevoEstado);
-        administrador.assignTask(tarea.id, nuevoResponsable);
-        administrador.updateField(tarea.id, "prioridad", nuevaPrioridad);
-        administrador.updateField(tarea.id, "tipo", nuevoTipo);
+        try {
+            await administrador.updateTask(tarea.id, {
 
-        administrador.guardar();
+                estado: nuevoEstado,
+                asignadoA: nuevoResponsable,
+                prioridad: nuevaPrioridad,
+                tipo: nuevoTipo
 
-        // Mostrar nuevamente las tarjetas actualizadas.
-        mostrarTareas();
+            });
+
+            mostrarTareas();
+
+        } catch (error) {
+            mostrarError(error);
+        }
     });
 
     // Eliminar una tarea.
-    tarjeta.querySelector(".btn-eliminar").addEventListener("click", () => {
-        administrador.deleteTask(tarea.id);
+    tarjeta.querySelector(".btn-eliminar").addEventListener("click", async () => {
 
-        administrador.guardar();
+        try {
+            await administrador.deleteTask(tarea.id);
+            mostrarTareas();
 
-        mostrarTareas();
+        } catch (error) {
+            mostrarError(error);
+        }
     });
 
     return tarjeta;
@@ -234,7 +268,7 @@ function crearTarjetaKanban(tarea) {
                 <h4>${tarea.nombre}</h4>
                 <p><strong>Tipo:</strong> ${tarea.tipo}</p>
                 <p><strong>Asignado a:</strong> ${tarea.asignadoA}</p>
-                <p><strong>Entrega:</strong> ${tarea.fechaDeEntrega}</p>
+                <p><strong>Entrega:</strong> ${obtenerFecha(tarea.fechaEntrega)}</p>
 
                 <button type="button" class="btn-detalles">Ver detalles</button>
             </div>
@@ -250,9 +284,9 @@ function crearTarjetaKanban(tarea) {
                 <p><strong>Estado:</strong> ${obtenerNombreEstado(tarea.estado)}</p>
                 <p><strong>Tipo:</strong> ${tarea.tipo}</p>
                 <p><strong>Asignado a:</strong> ${tarea.asignadoA}</p>
-                <p><strong>Creación:</strong> ${tarea.fechaDeCreacion.replace("T", " ")}</p>
-                <p><strong>Inicio:</strong> ${tarea.fechaDeInicio}</p>
-                <p><strong>Entrega:</strong> ${tarea.fechaDeEntrega}</p>
+                <p><strong>Creación:</strong> ${obtenerFecha(tarea.fechaCreacion)}</p>
+                <p><strong>Inicio:</strong> ${obtenerFecha(tarea.fechaInicio)}</p>
+                <p><strong>Entrega:</strong> ${obtenerFecha(tarea.fechaEntrega)}</p>
 
                 <button type="button" class="btn-volver">Volver</button>
             </div>
@@ -349,23 +383,27 @@ function mostrarTareas() {
 }
 
 // Completar tareas desde el Backlog.
-listaTareas.addEventListener("click", (evento) => {
+listaTareas.addEventListener("click", async (evento) => {
 
     if (evento.target.classList.contains("btn-completar")) {
         const elementoTarea = evento.target.closest(".tarea-card");
         const id = Number(elementoTarea.dataset.id);
 
-        administrador.updateTask(id, "HECHO");
+        try {
+            await administrador.updateTask(id, {
+                estado: "HECHO"
+            });
 
-        administrador.guardar();
+            mostrarTareas();
 
-        mostrarTareas();
-
+        } catch (error) {
+            mostrarError(error);
+        }
     }
 });
 
 // Crear una tarea nueva.
-formulario.addEventListener("submit", (evento) => {
+formulario.addEventListener("submit", async (evento) => {
     evento.preventDefault(); // Evitar que se recargue la página.
 
     // Validar los campos del formulario.
@@ -381,47 +419,74 @@ formulario.addEventListener("submit", (evento) => {
         asignadoA: document.getElementById("responsable").value.trim(),
         prioridad: document.getElementById("prioridad").value,
         estado: document.getElementById("estado").value,
-        fechaDeCreacion: fechaDeCreacion.value,
-        fechaDeInicio: fechaDeInicio.value,
-        fechaDeEntrega: fechaDeEntrega.value
+        fechaCreacion: fechaDeCreacion.value,
+        fechaInicio: fechaDeInicio.value,
+        fechaEntrega: fechaDeEntrega.value
     };
 
-    // Guardar la tarea y actualizar la página.
-    administrador.addTask(tarea);
-    administrador.guardar();
-    mostrarTareas();
+    try {
+        await administrador.addTask(tarea);
+        mostrarTareas();
+        formulario.reset();
 
-    // Limpiar el formulario y Actualizar fecha Actual
-    actualizarFechas();
+        actualizarFechas();
+
+    } catch (error) {
+        mostrarError(error);
+    }
 });
 
 // Aplicar el filtro cuando cambie la selección.
 filtro.addEventListener("change", mostrarTareas);
 
 // Eliminar las tareas seleccionadas.
-btnEliminarSeleccionadas.addEventListener("click", () => {
+btnEliminarSeleccionadas.addEventListener("click", async () => {
     const seleccionadas = document.querySelectorAll(
         "#listaTareas .seleccionar-tarea:checked"
     );
 
-    // Verificar que se haya seleccionado alguna tarea.
-    if (seleccionadas.length === 0) {
-        alert("Selecciona al menos una tarea.");
-        return;
+    const ids = Array.from(seleccionadas).map(
+        casilla => Number(casilla.dataset.id)
+    );
+
+    try {
+
+        for (const id of ids) {
+            await administrador.deleteTask(id);
+        }
+
+        mostrarTareas();
+
+    } catch (error) {
+        mostrarError(error);
+
+        try {
+            await administrador.cargar();
+            mostrarTareas();
+
+        } catch (errorCarga) {
+            mostrarError(errorCarga);
+        }
     }
-
-    // Eliminar cada tarea seleccionada.
-    seleccionadas.forEach(casilla => {
-        administrador.deleteTask(Number(casilla.dataset.id));
-    });
-
-    administrador.guardar();
-
-    mostrarTareas();
 });
 
-// Recuperar las tareas guardadas.
-administrador.cargar();
+// Consultar las tareas al abrir la página.
+async function iniciarAplicacion() {
 
-// Mostrar las tareas al abrir la página.
-mostrarTareas();
+    try {
+        await administrador.cargar();
+        mostrarTareas();
+
+    } catch (error) {
+        mostrarError(error);
+
+        listaTareas.innerHTML = `
+            <p class="mensaje-vacio">
+                No fue posible cargar las tareas.
+                Verifica que el backend esté ejecutándose.
+            </p>
+        `;
+    }
+}
+// Iniciar la aplicación.
+iniciarAplicacion();
