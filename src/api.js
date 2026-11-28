@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080/api/tasks';
+const API_URL = 'https://klyro-server-33a38.containers.snapdeploy.app/api/tasks';
 
 // Consultar todas las tareas.
 export function obtenerTareas() {
